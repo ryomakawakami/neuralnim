@@ -49,7 +49,7 @@ bool Pile::one() {
         return(false);
 }
 
-// Game function returns winner
+// Game function returns winner 
 // Player 1 is 0, Player 2 is 1
 int game() {
     int winner, choice, number;
