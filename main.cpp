@@ -14,6 +14,7 @@ class Computer {
     public:
         float* getWeights();
         void setWeights(float lower, float upper);
+        void setIndWeights(int weight, float base, float range);
     private:
         float weights1[8], weights2[8];
 };
@@ -24,6 +25,8 @@ void setAllWeights(Computer* a, float lower, float upper);
 
 Computer* train(Computer* a, Computer* b);
 Computer* tournament(Computer* a);
+
+Computer* survival(Computer* a, int generations);
 
 int main() {
 
@@ -49,7 +52,7 @@ int main() {
 
     // train(&ai[0], &ai[1]);
 
-    winner = tournament(ai);
+    winner = survival(ai, 10000);
 
     for (int i = 0; i < 16; i++) {
         cout << *(winner->getWeights()+i) << endl;
@@ -74,6 +77,16 @@ void Computer::setWeights(float lower, float upper) {
     for (int i = 0; i < 8; i++) {
         weights1[i] = float(rand()%10001)/10000;
         weights2[i] = float(rand()%10001)/10000;
+    }
+}
+
+// Randomizes individual weights
+void Computer::setIndWeights(int weight, float base, float range) {
+    if(weight <= 8) {
+        weights1[weight] = base + range*(float(rand()%10001/10000) - 0.5);
+    }
+    else {
+        weights2[weight] = base + range*(float(rand()%10001/10000) - 0.5);
     }
 }
 
@@ -319,6 +332,25 @@ Computer* tournament(Computer* a) {
     winners2[0] = train(winners2[2*i+1], winners2[2*i]);
     // Finals
     winner = train(winners1[0], winners2[0]);
+
+    return(winner);
+}
+
+Computer* survival(Computer* a, int generations) {
+    float winWeights[16];
+    Computer* winner;
+
+    for (int i = 0; i < generations; i++) {
+        // cout << "Generation " << i+1 << endl;
+
+        winner = tournament(a);
+
+        for (int i = 0; i < 64; i++) {
+            for (int j = 0; j < 16; j++) {
+                a[i].setIndWeights(j, *(winner->getWeights()+j), 1.0/generations);
+            }
+        }
+    }
 
     return(winner);
 }
