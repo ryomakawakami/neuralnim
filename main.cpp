@@ -23,12 +23,14 @@ float weights[16];
 void setAllWeights(Computer* a, float lower, float upper);
 
 Computer* train(Computer* a, Computer* b);
+Computer* tournament(Computer* a);
 
 int main() {
 
     //float* address;
     //Computer ai;
     //address = ai.getWeights();
+    Computer* winner;
 
     // Seed rand
     srand(time(NULL));
@@ -45,7 +47,13 @@ int main() {
     //    cout << *(ai[a].getWeights()) << endl;
     //}
 
-    train(&ai[0], &ai[1]);
+    // train(&ai[0], &ai[1]);
+
+    winner = tournament(ai);
+
+    for (int i = 0; i < 16; i++) {
+        cout << *(winner->getWeights()+i) << endl;
+    }
 
 }
 
@@ -92,9 +100,9 @@ Computer* train(Computer* a, Computer* b) {
     
     while(!end) {
         // Display piles
-        cout << endl << pile1.getSticks() << " "
-            << pile2.getSticks() << " " <<
-            pile3.getSticks() << endl;
+        // cout << endl << pile1.getSticks() << " "
+        //     << pile2.getSticks() << " " <<
+        //     pile3.getSticks() << endl;
 
         // Find empty piles and one stick piles
         zeroPiles = pile1.empty() + pile2.empty() + pile3.empty();
@@ -268,10 +276,49 @@ Computer* train(Computer* a, Computer* b) {
 
     }
 
-    if (winner)
-        cout << "Computer A wins";
-        //return(a);
-    else
-        cout << "Computer B wins";
-        //return(b);
+    if (winner) {
+        // cout << "Computer A wins";
+        return(a);
+    }
+    else {
+        // cout << "Computer B wins";
+        return(b);
+    }
+}
+
+Computer* tournament(Computer* a) {
+    int i;
+    Computer* winner, *winners1[32], *winners2[32];
+    // Round of 64
+    for (i = 0; i < 32; i++) {
+        winners1[i] = train(&a[2*i], &a[2*i+1]);
+        winners2[i] = train(&a[2*i+1], &a[2*i]);
+    }
+    // Round of 32
+    for (i = 0; i < 16; i++) {
+        winners1[i] = train(winners1[2*i], winners1[2*i+1]);
+        winners2[i] = train(winners2[2*i+1], winners2[2*i]);
+    }
+    // Sweet 16
+    for (i = 0; i < 8; i++) {
+        winners1[i] = train(winners1[2*i], winners1[2*i+1]);
+        winners2[i] = train(winners2[2*i+1], winners2[2*i]);
+    }
+    // Elite 8
+    for (i = 0; i < 4; i++) {
+        winners1[i] = train(winners1[2*i], winners1[2*i+1]);
+        winners2[i] = train(winners2[2*i+1], winners2[2*i]);
+    }
+    // Final 4
+    for (i = 0; i < 2; i++) {
+        winners1[i] = train(winners1[2*i], winners1[2*i+1]);
+        winners2[i] = train(winners2[2*i+1], winners2[2*i]);
+    }
+    // Division Finals
+    winners1[0] = train(winners1[2*i], winners1[2*i+1]);
+    winners2[0] = train(winners2[2*i+1], winners2[2*i]);
+    // Finals
+    winner = train(winners1[0], winners2[0]);
+
+    return(winner);
 }
