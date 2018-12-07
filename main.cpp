@@ -5,11 +5,8 @@
 using namespace std;
 
 // Class definition for computer
-// Weights initialized from -1 to 1. Range is -37 to 37
-// weights1 for pile selection
-// weights2 for number selection
-// Number in pile 1, 2, 3, number of empty piles, number of 1 stick piles,
-// absolute values of 1-2, 2-3, 3-1
+// 192 weights with 2 parameters (pile, number to take)
+// representing all possible pile combinations
 class Computer {
     public:
         float* getWeights();
