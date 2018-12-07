@@ -15,6 +15,7 @@ class Computer {
         float* getWeights();
         void setWeights(float lower, float upper);
         void setIndWeights(int weight, float base, float range);
+        void manualWeights(float entry[16]);
     private:
         float weights1[8], weights2[8];
 };
@@ -42,6 +43,12 @@ int main() {
     // Only works with default constructor
     Computer* ai = new Computer[64];
 
+    // Manual entry
+    float arr[16] = {0.357851, 0.0945, 0.8809, 0.5937, 0.7029, 0.4342,
+    0.3808, 0.7298, -0.534183, 0.0946, 0.881, 0.5938, 0.703, 0.4343,
+    0.3809, 0.7299};
+    Computer trained;
+
     // Set random weights
     setAllWeights(ai, -1, 1);
 
@@ -51,12 +58,14 @@ int main() {
     //}
 
     // train(&ai[0], &ai[1]);
+    train(&trained, &ai[0]);
+    train(&ai[0], &trained);
 
-    winner = survival(ai, 10000);
+    // winner = survival(ai, 10000);
 
-    for (int i = 0; i < 16; i++) {
-        cout << *(winner->getWeights()+i) << endl;
-    }
+    // for (int i = 0; i < 16; i++) {
+    //     cout << *(winner->getWeights()+i) << endl;
+    // }
 
 }
 
@@ -82,11 +91,21 @@ void Computer::setWeights(float lower, float upper) {
 
 // Randomizes individual weights
 void Computer::setIndWeights(int weight, float base, float range) {
-    if(weight <= 8) {
+    if (weight <= 8) {
         weights1[weight] = base + range*(float(rand()%10001/10000) - 0.5);
     }
     else {
         weights2[weight] = base + range*(float(rand()%10001/10000) - 0.5);
+    }
+}
+
+void Computer::manualWeights(float entry[16]) {
+    int i;
+    for (i = 0; i < 8; i++) {
+        weights1[i] = entry[i];
+    }
+    for (i = 0; i < 8; i++) {
+        weights2[i] = entry[i+8];
     }
 }
 
@@ -290,11 +309,11 @@ Computer* train(Computer* a, Computer* b) {
     }
 
     if (winner) {
-        // cout << "Computer A wins";
+        cout << "Computer A wins";
         return(a);
     }
     else {
-        // cout << "Computer B wins";
+        cout << "Computer B wins";
         return(b);
     }
 }
