@@ -7,6 +7,7 @@
 using namespace std;
 
 int main() {
+    Network network;
 
+    cout << network.layer1[0].getWeight();
 }
-
