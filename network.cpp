@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdlib.h>
 #include <vector>
 
 using namespace std;
@@ -9,19 +10,19 @@ class Neuron {
     public:
         Neuron();
 
-        void setBias(float b);
-        float getBias();
+        void setBias(double b);
+        double getBias();
 
         void clearWeight();
-        void setWeight(vector<float> input);
-        vector<float> getWeight();
+        void setWeight(vector<double> input);
+        vector<double> getWeight();
 
-        float calculateOutput(vector<float> input);
+        double calculateOutput(vector<double> input);
 
     private:
 
-        float bias;
-        vector<float> weight;
+        double bias;
+        vector<double> weight;
 
 };
 
@@ -31,14 +32,20 @@ class Neuron {
 class Network {
     public:
         Network();
-        Neuron layer1[10], layer2[15];
+        Neuron neuron[25];         // 10 hidden, 15 output
+        vector<double> calculateOutput(vector<double> input);
     private:
         vector<int> setup;
 };
 
 // Converts value to value between -1 and 1
-float sigmoid(float a) {
+double sigmoid(double a) {
     return(1.0 / (1.0 + exp(a)));
+}
+
+// Generates random number in [0, 1]
+double randNum() {
+    return (double) rand() / RAND_MAX;
 }
 
 // Neuron constructor
@@ -46,11 +53,11 @@ Neuron::Neuron() {
     bias = 0;
 }
 
-void Neuron::setBias(float b) {
+void Neuron::setBias(double b) {
     bias = b;
 }
 
-float Neuron::getBias() {
+double Neuron::getBias() {
     return bias;
 }
 
@@ -58,17 +65,17 @@ void Neuron::clearWeight() {
     weight.clear();
 }
 
-void Neuron::setWeight(vector<float> input) {
+void Neuron::setWeight(vector<double> input) {
     weight.clear();
     weight = input;
 }
 
-vector<float> Neuron::getWeight() {
+vector<double> Neuron::getWeight() {
     return weight;
 }
 
-float Neuron::calculateOutput(vector<float> input) {
-    float output = bias;
+double Neuron::calculateOutput(vector<double> input) {
+    double output = bias;
     for(int i = 0; i < weight.size(); i++) {
         output += input[i] * weight[i];
     }
@@ -76,8 +83,14 @@ float Neuron::calculateOutput(vector<float> input) {
 }
 
 Network::Network() {
-    // Store the configuration for future reference
     setup.push_back(3);
     setup.push_back(10);
     setup.push_back(15);
+}
+
+vector<double> Network::calculateOutput(vector<double> input) {
+    // From second layer to last layer
+    for(int layer = 1; layer < setup.size(); layer++) {
+
+    }
 }

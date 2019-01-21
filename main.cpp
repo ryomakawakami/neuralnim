@@ -8,5 +8,9 @@
 using namespace std;
 
 int main() {
+    // Seed random
+    srand(time(NULL));
+    
     Network network;
+    cout << network.neuron[0].getBias() << endl;
 }
