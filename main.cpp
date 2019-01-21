@@ -12,5 +12,10 @@ int main() {
     srand(time(NULL));
     
     Network network;
-    cout << network.neuron[0].getBias() << endl;
+    network.initialize();
+    for(int i = 0; i < NUM_NEURONS; i++) {
+        for(int j = 0; j < network.neuron[i].getWeight().size(); j++) {
+            cout << "Neuron " << i << "\t" << network.neuron[i].getWeight()[j] << endl;
+        }
+    }
 }

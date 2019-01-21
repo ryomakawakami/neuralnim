@@ -2,6 +2,13 @@
 #include <stdlib.h>
 #include <vector>
 
+#define LAYERS 3
+#define LAYER1 3
+#define LAYER2 10
+#define LAYER3 15
+#define TOTAL (LAYER1 + LAYER2 + LAYER3)
+#define NUM_NEURONS (LAYER2 + LAYER3)
+
 using namespace std;
 
 // Each neuron has a input weights and a bias
@@ -31,11 +38,9 @@ class Neuron {
 // The outputs are every possible move
 class Network {
     public:
-        Network();
-        Neuron neuron[25];         // 10 hidden, 15 output
+        Neuron neuron[NUM_NEURONS];         // LAYER2 + LAYER3
+        void initialize();
         vector<double> calculateOutput(vector<double> input);
-    private:
-        vector<int> setup;
 };
 
 // Converts value to value between -1 and 1
@@ -43,9 +48,9 @@ double sigmoid(double a) {
     return(1.0 / (1.0 + exp(a)));
 }
 
-// Generates random number in [0, 1]
+// Generates random number in [-1, 1]
 double randNum() {
-    return (double) rand() / RAND_MAX;
+    return (double) rand() / RAND_MAX * 2 - 1;
 }
 
 // Neuron constructor
@@ -82,15 +87,32 @@ double Neuron::calculateOutput(vector<double> input) {
     return sigmoid(output);
 }
 
-Network::Network() {
-    setup.push_back(3);
-    setup.push_back(10);
-    setup.push_back(15);
+// TODO: Make more modular (maybe store LAYER info in vector)
+void Network::initialize() {
+    // Initialize layer 2 weight and bias
+    for(int i = 0; i < LAYER2; i++) {
+        vector<double> weights;
+        for(int j = 0; j < LAYER1; j++) {
+            weights.push_back(randNum());
+        }
+        neuron[i].setWeight(weights);
+        neuron[i].setBias(randNum());
+    }
+
+    // Initialize layer 3 weight and bias
+    for(int i = LAYER2; i < (LAYER2+LAYER3); i++) {
+        vector<double> weights;
+        for(int j = 0; j < LAYER2; j++) {
+            weights.push_back(randNum());
+        }
+        neuron[i].setWeight(weights);
+        neuron[i].setBias(randNum());
+    }
 }
 
 vector<double> Network::calculateOutput(vector<double> input) {
     // From second layer to last layer
-    for(int layer = 1; layer < setup.size(); layer++) {
+    for(int layer = 1; layer < LAYERS; layer++) {
 
     }
 }
