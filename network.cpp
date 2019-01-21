@@ -12,16 +12,16 @@ class Neuron {
         void setBias(float b);
         float getBias();
 
-        void clearWeights();
-        void setWeights(vector<float> inputs);
-        vector<float> getWeights();
+        void clearWeight();
+        void setWeight(vector<float> input);
+        vector<float> getWeight();
 
-        float calculateOutput(vector<float> inputs);
+        float calculateOutput(vector<float> input);
 
     private:
 
         float bias;
-        vector<float> weights;
+        vector<float> weight;
 
 };
 
@@ -54,23 +54,23 @@ float Neuron::getBias() {
     return bias;
 }
 
-void Neuron::clearWeights() {
-    weights.clear();
+void Neuron::clearWeight() {
+    weight.clear();
 }
 
-void Neuron::setWeights(vector<float> inputs) {
-    weights.clear();
-    weights = inputs;
+void Neuron::setWeight(vector<float> input) {
+    weight.clear();
+    weight = input;
 }
 
-vector<float> Neuron::getWeights() {
-    return weights;
+vector<float> Neuron::getWeight() {
+    return weight;
 }
 
-float Neuron::calculateOutput(vector<float> inputs) {
+float Neuron::calculateOutput(vector<float> input) {
     float output = bias;
-    for(int i = 0; i < weights.size(); i++) {
-        output += inputs[i] * weights[i];
+    for(int i = 0; i < weight.size(); i++) {
+        output += input[i] * weight[i];
     }
     return sigmoid(output);
 }
