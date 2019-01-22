@@ -2,12 +2,13 @@
 #include <stdlib.h>
 #include <vector>
 
-#define LAYERS 3
+#define LAYERS 4
 #define LAYER1 3
-#define LAYER2 10
-#define LAYER3 15
-#define TOTAL (LAYER1 + LAYER2 + LAYER3)
-#define NUM_NEURONS (LAYER2 + LAYER3)
+#define LAYER2 5
+#define LAYER3 5
+#define LAYER4 15
+#define TOTAL (LAYER1 + LAYER2 + LAYER3 + LAYER4)
+#define NUM_NEURONS (LAYER2 + LAYER3 + LAYER4)
 
 using namespace std;
 
@@ -33,12 +34,12 @@ class Neuron {
 
 };
 
-// 3 input neurons (passed in as vector), 10 hidden neurons, 15 output neurons
+// 3 input neurons (passed in as vector), 10 hidden neurons (2 layers), 15 output neurons
 // The inputs are from the number in each pile
 // The outputs are every possible move
 class Network {
     public:
-        Neuron neuron[NUM_NEURONS];         // LAYER2 + LAYER3
+        Neuron neuron[NUM_NEURONS];         // LAYER2 + LAYER3 + LAYER3
         void initialize();
         vector<double> calculateOutput(vector<double> input);
 };
@@ -89,9 +90,10 @@ double Neuron::calculateOutput(vector<double> input) {
 
 // TODO: Make more modular (maybe store LAYER info in vector)
 void Network::initialize() {
+    vector<double> weights;
     // Initialize layer 2 weight and bias
     for(int i = 0; i < LAYER2; i++) {
-        vector<double> weights;
+        weights.clear();
         for(int j = 0; j < LAYER1; j++) {
             weights.push_back(randNum());
         }
@@ -101,8 +103,18 @@ void Network::initialize() {
 
     // Initialize layer 3 weight and bias
     for(int i = LAYER2; i < (LAYER2+LAYER3); i++) {
-        vector<double> weights;
+        weights.clear();
         for(int j = 0; j < LAYER2; j++) {
+            weights.push_back(randNum());
+        }
+        neuron[i].setWeight(weights);
+        neuron[i].setBias(randNum());
+    }
+
+    // Initialize layer 4 weight and bias
+    for(int i = (LAYER2+LAYER3); i < (LAYER2+LAYER3+LAYER4); i++) {
+        weights.clear();
+        for(int j = 0; j < LAYER3; j++) {
             weights.push_back(randNum());
         }
         neuron[i].setWeight(weights);
