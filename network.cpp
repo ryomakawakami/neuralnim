@@ -46,7 +46,7 @@ class Network {
 
 // Converts value to value between -1 and 1
 double sigmoid(double a) {
-    return(1.0 / (1.0 + exp(a)));
+    return(1.0 / (1.0 + exp(-a)));
 }
 
 // Generates random number in [-1, 1]
@@ -123,8 +123,84 @@ void Network::initialize() {
 }
 
 vector<double> Network::calculateOutput(vector<double> input) {
-    // From second layer to last layer
-    for(int layer = 1; layer < LAYERS; layer++) {
+
+    cout << "in: " << input[0] << " " << input[1] << " " << input[2] << endl << endl;
+
+    // pass vector
+    vector<double> pass;
+
+
+    // Second layer
+
+    // Clear output vector
+    pass.clear();
+
+    for(int i = 0; i < LAYER2; i++) {
+        
+        double entry = neuron[i].getBias();
+        cout << "b: " << neuron[i].getBias() << endl;
+
+        cout << "w: ";
+        for(int j = 0; j < LAYER1; j++) {
+            entry += neuron[i].getWeight()[j] * input[j];
+            cout << neuron[i].getWeight()[j] << " ";
+        }
+        cout << endl;
+
+        cout << "t: " << sigmoid(entry) << endl << endl;
+
+        pass.push_back(sigmoid(entry));
 
     }
+
+    cout << "--------------" << endl << endl;
+
+    // Third layer
+
+    // Clear output vector
+    pass.clear();
+
+    for(int i = LAYER2; i < LAYER2 + LAYER3; i++) {
+        
+        double entry = neuron[i].getBias();
+        cout << "b: " << neuron[i].getBias() << endl;
+
+        cout << "w: ";
+        for(int j = 0; j < LAYER2; j++) {
+            entry += neuron[i].getWeight()[j] * input[j];
+            cout << neuron[i].getWeight()[j] << " ";
+        }
+        cout << endl;
+
+        cout << "t: " << sigmoid(entry) << endl << endl;
+
+        pass.push_back(sigmoid(entry));
+
+    }
+
+
+    // Output layer
+
+   // Clear output vector
+    pass.clear();
+
+    for(int i = LAYER2 + LAYER3; i < LAYER2 + LAYER3 + LAYER4; i++) {
+        
+        double entry = neuron[i].getBias();
+        cout << "b: " << neuron[i].getBias() << endl;
+
+        cout << "w: ";
+        for(int j = 0; j < LAYER3; j++) {
+            entry += neuron[i].getWeight()[j] * input[j];
+            cout << neuron[i].getWeight()[j] << " ";
+        }
+        cout << endl;
+
+        cout << "t: " << sigmoid(entry) << endl << endl;
+
+        pass.push_back(sigmoid(entry));
+
+    }
+
+    return pass;
 }
