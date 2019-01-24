@@ -123,81 +123,32 @@ vector<double> Network::calculateOutput(vector<double> input) {
 
     cout << "in: " << input[0] << " " << input[1] << " " << input[2] << endl << endl;
 
+    int start = 0, end = setup[1];
+
     // pass vector
     vector<double> pass;
 
+    // Second to last layer
+    for(int layer = 1; layer < setup.size(); layer++) {
+        pass.clear();
+        for(int i = start; i < end; i++) {
+            double entry = neuron[i].getBias();
 
-    // Second layer
+            cout << "b: " << neuron[i].getBias() << endl;
+            cout << "w: ";
 
-    // Clear output vector
-    pass.clear();
+            for(int j = 0; j < setup[layer-1]; j++) {
+                entry += neuron[i].getWeight()[j] * input[j];
+                cout << neuron[i].getWeight()[j] << " ";
+            }
 
-    for(int i = 0; i < LAYER2; i++) {
-        
-        double entry = neuron[i].getBias();
-        cout << "b: " << neuron[i].getBias() << endl;
+            cout << "\nt: " << sigmoid(entry) << endl << endl;
 
-        cout << "w: ";
-        for(int j = 0; j < LAYER1; j++) {
-            entry += neuron[i].getWeight()[j] * input[j];
-            cout << neuron[i].getWeight()[j] << " ";
+            pass.push_back(sigmoid(entry));
         }
-        cout << endl;
-
-        cout << "t: " << sigmoid(entry) << endl << endl;
-
-        pass.push_back(sigmoid(entry));
-
-    }
-
-    cout << "--------------" << endl << endl;
-
-    // Third layer
-
-    // Clear output vector
-    pass.clear();
-
-    for(int i = LAYER2; i < LAYER2 + LAYER3; i++) {
-        
-        double entry = neuron[i].getBias();
-        cout << "b: " << neuron[i].getBias() << endl;
-
-        cout << "w: ";
-        for(int j = 0; j < LAYER2; j++) {
-            entry += neuron[i].getWeight()[j] * input[j];
-            cout << neuron[i].getWeight()[j] << " ";
-        }
-        cout << endl;
-
-        cout << "t: " << sigmoid(entry) << endl << endl;
-
-        pass.push_back(sigmoid(entry));
-
-    }
-
-    cout << "--------------" << endl << endl;
-
-    // Output layer
-
-   // Clear output vector
-    pass.clear();
-
-    for(int i = LAYER2 + LAYER3; i < LAYER2 + LAYER3 + LAYER4; i++) {
-        
-        double entry = neuron[i].getBias();
-        cout << "b: " << neuron[i].getBias() << endl;
-
-        cout << "w: ";
-        for(int j = 0; j < LAYER3; j++) {
-            entry += neuron[i].getWeight()[j] * input[j];
-            cout << neuron[i].getWeight()[j] << " ";
-        }
-        cout << endl;
-
-        cout << "t: " << sigmoid(entry) << endl << endl;
-
-        pass.push_back(sigmoid(entry));
-
+        start += setup[layer];
+        end += setup[layer+1];
+        cout << "--------------" << endl << endl;
     }
 
     return pass;
