@@ -8,7 +8,7 @@ Creating a neural network that plays Nim using a genetic algorithm.
 [From Wikipedia](https://en.wikipedia.org/wiki/Nim "Nim - Wikipedia")
 
 ## Setup
-Each neural network has 3 input neurons, two layers of 5 hidden neurons, and 15 output neurons. The inputs and outputs will be from -1 to 1, using the sigmoid function when necessary.
+Each neural network has 3 input neurons, two layers of 5 hidden neurons, and 15 output neurons. The inputs and outputs will be from 0 to 1, using the sigmoid function when necessary.
 
 The inputs come from the number of sticks left in each pile divided by the total number of sticks in the pile. They will range from 0 to 1.
 
