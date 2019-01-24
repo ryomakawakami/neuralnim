@@ -2,12 +2,10 @@
 #include <stdlib.h>
 #include <vector>
 
-#define LAYERS 4
 #define LAYER1 3
 #define LAYER2 5
 #define LAYER3 5
 #define LAYER4 15
-#define TOTAL (LAYER1 + LAYER2 + LAYER3 + LAYER4)
 #define NUM_NEURONS (LAYER2 + LAYER3 + LAYER4)
 
 using namespace std;
@@ -100,56 +98,64 @@ Network::Network() {
 }
 
 void Network::initialize() {
+    // start and end are the indexes for neurons in current layer
     int start = 0, end = setup[1];
+    // weights is a temp vector to push random values to neurons
     vector<double> weights;
 
-    // Initialize weight and bias for layers 2 to last
+    // Initialize weight and bias for second layer to last layer
     for(int layer = 1; layer < setup.size(); layer++) {
+        // For the neurons in current layer
         for(int i = start; i < end; i++) {
+            // Clear temp vector
             weights.clear();
+            // Add random weights to temp vector
             for(int j = 0; j < setup[layer-1]; j++) {
                 weights.push_back(randNum());
             }
+            // Set weight vector as temp vector
             neuron[i].setWeight(weights);
+            // Set bias as random number
             neuron[i].setBias(randNum());
         }
+        // Shift indexes to next layer
         start += setup[layer];
-        end += setup[layer+1];
+        end += setup[layer+1];      // Seg fault?
     }  
 }
 
-// TODO: Standardize each layer calculation using setup vector
 vector<double> Network::calculateOutput(vector<double> input) {
-
-    cout << "in: " << input[0] << " " << input[1] << " " << input[2] << endl << endl;
-
+    // start and end are the indexes for neurons in current layer
     int start = 0, end = setup[1];
 
-    // pass vector
+    // pass is the vector passed between layers
     vector<double> pass;
 
-    // Second to last layer
+    // Second layer to last layer
     for(int layer = 1; layer < setup.size(); layer++) {
+        // Clear the pass vector
         pass.clear();
+        // For each neuron in current layer
         for(int i = start; i < end; i++) {
+            // entry holds each entry into pass vector
             double entry = neuron[i].getBias();
-
-            cout << "b: " << neuron[i].getBias() << endl;
-            cout << "w: ";
-
+            // For each weight
             for(int j = 0; j < setup[layer-1]; j++) {
-                entry += neuron[i].getWeight()[j] * input[j];
-                cout << neuron[i].getWeight()[j] << " ";
+                // Dot product of weights and pass vector (input vector for layer 2)
+                if(layer != 1) {
+                    entry += neuron[i].getWeight()[j] * pass[j];
+                }
+                else {
+                    entry += neuron[i].getWeight()[j] * input[j];
+                }
             }
-
-            cout << "\nt: " << sigmoid(entry) << endl << endl;
-
+            // Add new entry to pass vector
             pass.push_back(sigmoid(entry));
         }
+        // Shift indexes to next layer
         start += setup[layer];
         end += setup[layer+1];
-        cout << "--------------" << endl << endl;
     }
-
+    // Return the pass vector
     return pass;
 }
