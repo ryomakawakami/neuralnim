@@ -39,9 +39,12 @@ class Neuron {
 // The outputs are every possible move
 class Network {
     public:
+        Network();
         Neuron neuron[NUM_NEURONS];         // LAYER2 + LAYER3 + LAYER3
         void initialize();
         vector<double> calculateOutput(vector<double> input);
+    private:
+        vector<int> setup;
 };
 
 // Converts value to value between -1 and 1
@@ -88,40 +91,34 @@ double Neuron::calculateOutput(vector<double> input) {
     return sigmoid(output);
 }
 
-// TODO: Make more modular (maybe store LAYER info in vector)
-void Network::initialize() {
-    vector<double> weights;
-    // Initialize layer 2 weight and bias
-    for(int i = 0; i < LAYER2; i++) {
-        weights.clear();
-        for(int j = 0; j < LAYER1; j++) {
-            weights.push_back(randNum());
-        }
-        neuron[i].setWeight(weights);
-        neuron[i].setBias(randNum());
-    }
-
-    // Initialize layer 3 weight and bias
-    for(int i = LAYER2; i < (LAYER2+LAYER3); i++) {
-        weights.clear();
-        for(int j = 0; j < LAYER2; j++) {
-            weights.push_back(randNum());
-        }
-        neuron[i].setWeight(weights);
-        neuron[i].setBias(randNum());
-    }
-
-    // Initialize layer 4 weight and bias
-    for(int i = (LAYER2+LAYER3); i < (LAYER2+LAYER3+LAYER4); i++) {
-        weights.clear();
-        for(int j = 0; j < LAYER3; j++) {
-            weights.push_back(randNum());
-        }
-        neuron[i].setWeight(weights);
-        neuron[i].setBias(randNum());
-    }
+Network::Network() {
+    // Store configuration in vector
+    setup.push_back(LAYER1);
+    setup.push_back(LAYER2);
+    setup.push_back(LAYER3);
+    setup.push_back(LAYER4);
 }
 
+void Network::initialize() {
+    int start = 0, end = setup[1];
+    vector<double> weights;
+
+    // Initialize weight and bias for layers 2 to last
+    for(int layer = 1; layer < setup.size(); layer++) {
+        for(int i = start; i < end; i++) {
+            weights.clear();
+            for(int j = 0; j < setup[layer-1]; j++) {
+                weights.push_back(randNum());
+            }
+            neuron[i].setWeight(weights);
+            neuron[i].setBias(randNum());
+        }
+        start += setup[layer];
+        end += setup[layer+1];
+    }  
+}
+
+// TODO: Standardize each layer calculation using setup vector
 vector<double> Network::calculateOutput(vector<double> input) {
 
     cout << "in: " << input[0] << " " << input[1] << " " << input[2] << endl << endl;
@@ -178,6 +175,7 @@ vector<double> Network::calculateOutput(vector<double> input) {
 
     }
 
+    cout << "--------------" << endl << endl;
 
     // Output layer
 
